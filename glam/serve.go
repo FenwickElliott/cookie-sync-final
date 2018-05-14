@@ -60,6 +60,8 @@ func in(w http.ResponseWriter, r *http.Request) {
 	if res.PartnerCookie != partnerCookie {
 		panic("partnerCookie doesn't match")
 	}
+
+	http.Redirect(w, r, "http://localhost:5000/in?partner=glam&cookieID="+glamCookie.Value, 307)
 }
 
 // Utility functions:

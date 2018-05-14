@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 var (
@@ -49,17 +48,21 @@ func in(w http.ResponseWriter, r *http.Request) {
 		check(err)
 	}
 
-	res := association{}
-	c := db.C(partnerID)
-	err = c.Find(bson.M{"rockid": rockCookie.Value}).One(&res)
-	if err != nil {
-		c.Insert(association{rockCookie.Value, partnerCookie})
-		err = c.Find(bson.M{"rockid": rockCookie.Value}).One(&res)
-	}
-	check(err)
-	if res.PartnerCookie != partnerCookie {
-		panic("partnerCookie doesn't match")
-	}
+	fmt.Println(partnerID)
+	fmt.Println(partnerCookie)
+	fmt.Println(rockCookie.Value)
+
+	// res := association{}
+	// c := db.C(partnerID)
+	// err = c.Find(bson.M{"rockid": rockCookie.Value}).One(&res)
+	// if err != nil {
+	// 	c.Insert(association{rockCookie.Value, partnerCookie})
+	// 	err = c.Find(bson.M{"rockid": rockCookie.Value}).One(&res)
+	// }
+	// check(err)
+	// if res.PartnerCookie != partnerCookie {
+	// 	panic("partnerCookie doesn't match")
+	// }
 }
 
 // Utility functions:
