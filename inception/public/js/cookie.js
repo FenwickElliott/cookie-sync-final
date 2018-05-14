@@ -11,7 +11,7 @@ if (!cookieID) {
     setCookie();
 }
 
-document.getElementById("trackingFrame").src = tracker
+document.getElementById("trackingFrame").src = tracker + "in?partner=" + partnerID + "&cookieID=" + cookieID;
 
 //Utility functions:
 

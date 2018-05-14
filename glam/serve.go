@@ -13,18 +13,27 @@ import (
 var port = flag.String("port", "4000", "port to serve on")
 
 func main() {
-	http.HandleFunc("/", root)
+	http.HandleFunc("/in", in)
 	fmt.Println("Serving on port:", *port)
 	log.Fatal(http.ListenAndServe(":"+*port, nil))
 }
 
-func root(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("glamID")
-	if cookie == nil {
-		cookie = setCookie(&w, r)
+func in(w http.ResponseWriter, r *http.Request) {
+
+	r.ParseForm()
+	partnerID := r.FormValue("partner")
+	partnerCookie := r.FormValue("cookieID")
+
+	glamCookie, err := r.Cookie("glamID")
+	if glamCookie == nil {
+		glamCookie = setCookie(&w, r)
 	} else {
 		check(err)
 	}
+
+	fmt.Println("glamID:", glamCookie.Value)
+	fmt.Println("partnerID:", partnerID)
+	fmt.Println("partnerCookie:", partnerCookie)
 }
 
 // Utility functions:
