@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	port        = flag.String("port", "4000", "port to serve on")
+	port        = flag.String("port", "5000", "port to serve on")
 	mongoServer = flag.String("mongoServer", "127.0.0.1", "mongo server address")
 
 	db  *mgo.Database
@@ -22,7 +22,7 @@ var (
 )
 
 type association struct {
-	GlamID        string
+	RockID        string
 	PartnerCookie string
 }
 
@@ -30,7 +30,7 @@ func main() {
 	session, err := mgo.Dial(*mongoServer)
 	check(err)
 	defer session.Close()
-	db = session.DB("glam")
+	db = session.DB("rock")
 
 	http.HandleFunc("/in", in)
 	fmt.Println("Serving on port:", *port)
@@ -42,19 +42,19 @@ func in(w http.ResponseWriter, r *http.Request) {
 	partnerID := r.FormValue("partner")
 	partnerCookie := r.FormValue("cookieID")
 
-	glamCookie, err := r.Cookie("glamID")
-	if glamCookie == nil {
-		glamCookie = setCookie(&w, r)
+	rockCookie, err := r.Cookie("rockID")
+	if rockCookie == nil {
+		rockCookie = setCookie(&w, r)
 	} else {
 		check(err)
 	}
 
 	res := association{}
 	c := db.C(partnerID)
-	err = c.Find(bson.M{"glamid": glamCookie.Value}).One(&res)
+	err = c.Find(bson.M{"rockid": rockCookie.Value}).One(&res)
 	if err != nil {
-		c.Insert(association{glamCookie.Value, partnerCookie})
-		err = c.Find(bson.M{"glamid": glamCookie.Value}).One(&res)
+		c.Insert(association{rockCookie.Value, partnerCookie})
+		err = c.Find(bson.M{"rockid": rockCookie.Value}).One(&res)
 	}
 	check(err)
 	if res.PartnerCookie != partnerCookie {
@@ -73,7 +73,7 @@ func check(err error) {
 func setCookie(w *http.ResponseWriter, r *http.Request) *http.Cookie {
 	h := sha1.New()
 	h.Write([]byte(time.Now().String() + r.RemoteAddr))
-	cookie := http.Cookie{Name: "glamID", Value: hex.EncodeToString(h.Sum(nil)), Expires: time.Now().Add(365 * 24 * time.Hour)}
+	cookie := http.Cookie{Name: "rockID", Value: hex.EncodeToString(h.Sum(nil)), Expires: time.Now().Add(365 * 24 * time.Hour)}
 	http.SetCookie(*w, &cookie)
 	return &cookie
 }
