@@ -11,7 +11,7 @@ if (!cookieID) {
     setCookie();
 }
 
-
+document.getElementById("trackingFrame").src = tracker
 
 //Utility functions:
 
